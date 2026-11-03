@@ -8,14 +8,24 @@ import java.util.List;
 public class ProductService {
     private ProductRepository productRepository;
 
-    public ProductService() {
-        this.productRepository = new ProductRepository();
+    private static Integer highestCode = 0;
+
+    public ProductService(ProductRepository productRepository) {
+        this.productRepository = productRepository;
     }
 
     public List<Product> findAll(){
-        return productRepository.findAll();
+        List<Product> result = productRepository.findAll();
+
+        for(var i : result){
+            if(i.getCode() > highestCode)
+                highestCode = i.getCode();
+        }
+
+        return result;
     };
     public Product create(Product product){
+        product.setCode(++highestCode);
         return productRepository.create(product);
     };
     public Product update(Product product){

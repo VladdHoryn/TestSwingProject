@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.List;
 
@@ -47,9 +48,37 @@ public class CsvProductRepository implements ProductRepository{
         }
     }
 
+    private String productToCsv(Product product) {
+        return String.format(
+                "%d,%s,%d,%.1f,%d,%s,%.2f,%d",
+                product.getCode(),
+                product.getName(),
+                product.getDiagonalSize(),
+                product.getWidth(),
+                product.getHeight(),
+                product.getDisplayTechnology(),
+                product.getPrice(),
+                product.getQuantity()
+        );
+    }
+
     @Override
     public Product create(Product product) {
-        return null;
+        String csvLine = productToCsv(product);
+        try{
+            Files.writeString(
+                    csvPath,
+                    csvLine + System.lineSeparator(),
+                    StandardOpenOption.CREATE,
+                    StandardOpenOption.APPEND
+            );
+
+            return product;
+        }
+        catch (IOException e){
+            throw new RuntimeException(
+                    "Cannot create new line in CSV", e);
+        }
     }
 
     @Override
