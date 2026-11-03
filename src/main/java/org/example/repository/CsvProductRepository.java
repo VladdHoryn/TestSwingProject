@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -50,7 +51,7 @@ public class CsvProductRepository implements ProductRepository{
 
     private String productToCsv(Product product) {
         return String.format(
-                "%d,%s,%d,%.1f,%d,%s,%.2f,%d",
+                "%d,%s,%.1f,%.1f,%.1f,%s,%s,%d",
                 product.getCode(),
                 product.getName(),
                 product.getDiagonalSize(),
@@ -81,13 +82,65 @@ public class CsvProductRepository implements ProductRepository{
         }
     }
 
+    private void rewriteCsv(List<Product> products)
+            throws IOException {
+
+        String header =
+                "code,brand,diagonal_size,width,height,display_technology,price,quantity";
+
+        List<String> lines = new ArrayList<>();
+
+        lines.add(header);
+
+        products.stream()
+                .map(product -> productToCsv(product))
+                .forEach(product -> lines.add(product));
+
+        Files.write(
+                csvPath,
+                lines,
+                StandardOpenOption.CREATE,
+                StandardOpenOption.TRUNCATE_EXISTING
+        );
+    }
+
     @Override
     public Product update(Product product) {
-        return null;
+        try {
+            List<Product> products = findAll();
+
+            List<Product> updatedProducts = products.stream()
+                    .map(p -> p.getCode() == product.getCode()
+                            ? product
+                            : p)
+                    .toList();
+
+            rewriteCsv(updatedProducts);
+
+            return product;
+
+        } catch (Exception e) {
+            throw new RuntimeException(
+                    "Cannot update product in CSV", e);
+        }
     }
 
     @Override
     public Boolean delete(Product product) {
-        return null;
+        try {
+            List<Product> products = findAll();
+
+            List<Product> filteredProducts = products.stream()
+                    .filter(p -> p.getCode() != product.getCode())
+                    .toList();
+
+            rewriteCsv(filteredProducts);
+
+            return true;
+
+        } catch (Exception e) {
+            throw new RuntimeException(
+                    "Cannot delete product from CSV", e);
+        }
     }
 }
