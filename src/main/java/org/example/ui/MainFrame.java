@@ -297,13 +297,84 @@ public class MainFrame extends JFrame {
     }
 
     private void openSellProductDialog() {
-        // dialog
+        originalProducts = service.findAll();
 
-        // ComboBox<Product>
+        List<Product> availableProducts = originalProducts.stream()
+                .filter(p -> p.getQuantity() != null && p.getQuantity() > 0)
+                .toList();
 
-        // Sell
+        if (availableProducts.isEmpty()) {
 
-        // Cancel
+            JOptionPane.showMessageDialog(
+                    this,
+                    "There are no products available for sale.",
+                    "Information",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+
+            return;
+        }
+
+        JDialog dialog = new JDialog(
+                this,
+                "Sell TV",
+                true
+        );
+
+        dialog.setLayout(new BorderLayout(10, 10));
+
+        JPanel panel = new JPanel(new FlowLayout());
+
+        JComboBox<Product> productComboBox =
+                new JComboBox<>(availableProducts.toArray(new Product[0]));
+
+        panel.add(new JLabel("Select product:"));
+        panel.add(productComboBox);
+
+        JPanel buttons = new JPanel();
+
+        JButton sell = new JButton("Sell");
+        JButton cancel = new JButton("Cancel");
+
+        buttons.add(sell);
+        buttons.add(cancel);
+
+        sell.addActionListener(e -> {
+
+            Product selectedProduct =
+                    (Product) productComboBox.getSelectedItem();
+
+            if (selectedProduct == null) {
+                return;
+            }
+
+            if (selectedProduct.getQuantity() <= 0) {
+                JOptionPane.showMessageDialog(
+                        dialog,
+                        "This product is out of stock."
+                );
+                return;
+            }
+
+            selectedProduct.setQuantity(
+                    selectedProduct.getQuantity() - 1
+            );
+
+            service.update(selectedProduct);
+
+            loadProducts();
+
+            dialog.dispose();
+        });
+
+        cancel.addActionListener(e -> dialog.dispose());
+
+        dialog.add(panel, BorderLayout.CENTER);
+        dialog.add(buttons, BorderLayout.SOUTH);
+
+        dialog.pack();
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
     }
 
     private void searchProducts(String query) {
