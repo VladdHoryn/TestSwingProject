@@ -7,9 +7,10 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class MainFrame extends JFrame {
@@ -17,7 +18,6 @@ public class MainFrame extends JFrame {
 
     private JTable table;
     private DefaultTableModel tableModel;
-    private TableRowSorter<DefaultTableModel> sorter;
 
     private JTextField searchField;
 
@@ -26,12 +26,21 @@ public class MainFrame extends JFrame {
 
     private List<Product> originalProducts;
 
+    private List<RowSorter.SortKey> previousSortKeys = new ArrayList<>();
+
+    private final int[] sortStates = new int[6];
+
+    private static final int SORT_DEFAULT = 0;
+    private static final int SORT_ASCENDING = 1;
+    private static final int SORT_DESCENDING = 2;
+
     public MainFrame(ProductService service) {
         this.service = service;
 
         initializeComponents();
         initializeLayout();
         initializeListeners();
+        initializeSorting();
 
         loadProducts();
 
@@ -64,8 +73,7 @@ public class MainFrame extends JFrame {
 
         table = new JTable(tableModel);
 
-        sorter = new TableRowSorter<>(tableModel);
-        table.setRowSorter(sorter);
+        table.setAutoCreateRowSorter(false);
 
         addButton = new JButton("Add Product");
         sellButton = new JButton("Sell TV");
@@ -126,6 +134,61 @@ public class MainFrame extends JFrame {
         addButton.addActionListener(e -> openAddProductDialog());
 
         sellButton.addActionListener(e -> openSellProductDialog());
+    }
+
+    private void initializeSorting() {
+
+        table.getTableHeader().addMouseListener(
+                new java.awt.event.MouseAdapter() {
+
+                    @Override
+                    public void mouseClicked(
+                            java.awt.event.MouseEvent e
+                    ) {
+
+                        int column = table.columnAtPoint(e.getPoint());
+
+                        if (column != 1 && column != 2 && column != 4) {
+                            return;
+                        }
+
+                        sortStates[column] =
+                                (sortStates[column] + 1) % 3;
+
+                        for (int i = 0; i < sortStates.length; i++) {
+                            if (i != column) {
+                                sortStates[i] = SORT_DEFAULT;
+                            }
+                        }
+
+                        applySorting(column);
+                    }
+                }
+        );
+    }
+
+    private void applySorting(int column) {
+
+        List<Product> products = originalProducts.stream()
+                .filter(product -> {
+
+                    String search = searchField.getText()
+                            .trim()
+                            .toLowerCase();
+
+                    return String.valueOf(product.getCode())
+                            .toLowerCase()
+                            .contains(search)
+                            ||
+                            product.getName()
+                                    .toLowerCase()
+                                    .contains(search);
+                })
+                .collect(java.util.stream.Collectors.toList());
+
+        sortProducts(products);
+
+        refreshTable(products);
     }
 
     private void loadProducts() {
@@ -378,14 +441,8 @@ public class MainFrame extends JFrame {
     }
 
     private void searchProducts(String query) {
+
         String search = query.trim().toLowerCase();
-
-        if (search.isEmpty()) {
-
-            refreshTable(originalProducts);
-
-            return;
-        }
 
         List<Product> filteredProducts = originalProducts.stream()
                 .filter(product ->
@@ -396,10 +453,55 @@ public class MainFrame extends JFrame {
                                 product.getName()
                                         .toLowerCase()
                                         .contains(search)
-
                 )
-                .toList();
+                .collect(java.util.stream.Collectors.toList());
+
+        sortProducts(filteredProducts);
 
         refreshTable(filteredProducts);
+    }
+
+    private void sortProducts(List<Product> products) {
+
+        int activeColumn = -1;
+
+        for (int i = 0; i < sortStates.length; i++) {
+            if (sortStates[i] != SORT_DEFAULT) {
+                activeColumn = i;
+                break;
+            }
+        }
+
+        if (activeColumn == -1) {
+            return;
+        }
+
+        Comparator<Product> comparator = switch (activeColumn) {
+
+            case 1 -> Comparator.comparing(
+                    Product::getName,
+                    String.CASE_INSENSITIVE_ORDER
+            );
+
+            case 2 -> Comparator.comparingDouble(
+                    Product::getDiagonalSize
+            );
+
+            case 4 -> Comparator.comparing(
+                    Product::getPrice
+            );
+
+            default -> null;
+        };
+
+        if (comparator == null) {
+            return;
+        }
+
+        if (sortStates[activeColumn] == SORT_DESCENDING) {
+            comparator = comparator.reversed();
+        }
+
+        products.sort(comparator);
     }
 }
