@@ -71,7 +71,21 @@ public class MainFrame extends JFrame {
     }
 
     private void initializeLayout() {
-        // NORTH   -> search panel
+        setLayout(new BorderLayout(10, 10));
+
+        JPanel searchPanel = new JPanel(new BorderLayout(10, 10));
+        searchPanel.setBorder(
+                BorderFactory.createEmptyBorder(10, 10, 5, 10)
+        );
+
+        searchPanel.add(
+                new JLabel("Search by code or brand:"),
+                BorderLayout.WEST
+        );
+
+        searchPanel.add(searchField, BorderLayout.CENTER);
+
+        add(searchPanel, BorderLayout.NORTH);
         // CENTER  -> table scroll pane
         // SOUTH   -> buttons panel
     }
