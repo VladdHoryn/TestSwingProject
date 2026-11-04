@@ -103,15 +103,27 @@ public class MainFrame extends JFrame {
     }
 
     private void loadProducts() {
-         service.findAll();
+        originalProducts = service.findAll();
 
-        // refreshTable(...)
+        refreshTable(originalProducts);
     }
 
     private void refreshTable(List<Product> products) {
-        // clear model
+        tableModel.setRowCount(0);
 
-        // add rows
+        for (Product product : products) {
+
+            Object[] row = {
+                    product.getCode(),
+                    product.getName(),
+                    product.getDiagonalSize(),
+                    product.getDisplayTechnology(),
+                    product.getPrice(),
+                    product.getQuantity()
+            };
+
+            tableModel.addRow(row);
+        }
     }
 
     private void openAddProductDialog() {
