@@ -86,7 +86,10 @@ public class MainFrame extends JFrame {
         searchPanel.add(searchField, BorderLayout.CENTER);
 
         add(searchPanel, BorderLayout.NORTH);
-        // CENTER  -> table scroll pane
+
+        JScrollPane scrollPane = new JScrollPane(table);
+
+        add(scrollPane, BorderLayout.CENTER);
         // SOUTH   -> buttons panel
     }
 
@@ -159,10 +162,28 @@ public class MainFrame extends JFrame {
     }
 
     private void searchProducts(String query) {
-        // filter by:
-        // product.getCode()
-        // product.getName()
+        String search = query.trim().toLowerCase();
 
-        // refreshTable(...)
+        if (search.isEmpty()) {
+
+            refreshTable(originalProducts);
+
+            return;
+        }
+
+        List<Product> filteredProducts = originalProducts.stream()
+                .filter(product ->
+                        String.valueOf(product.getCode())
+                                .toLowerCase()
+                                .contains(search)
+                                ||
+                                product.getName()
+                                        .toLowerCase()
+                                        .contains(search)
+
+                )
+                .toList();
+
+        refreshTable(filteredProducts);
     }
 }
