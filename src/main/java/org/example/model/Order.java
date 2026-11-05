@@ -133,7 +133,7 @@ public class Order {
     @AllArgsConstructor
     @Getter
     @Setter
-    private static class ProductItem  {
+    public static class ProductItem  {
         private Integer code;
         private String name;
         private Integer quantity;
