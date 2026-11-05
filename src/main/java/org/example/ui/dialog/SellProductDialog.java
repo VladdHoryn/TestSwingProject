@@ -1,5 +1,6 @@
 package org.example.ui.dialog;
 
+import org.example.model.Order;
 import org.example.model.Product;
 import org.example.service.OrderService;
 import org.example.service.ProductService;
@@ -170,28 +171,80 @@ public class SellProductDialog extends JDialog {
     }
 
     private void sellProduct(){
-        Product selectedProduct =
-                (Product) productComboBox.getSelectedItem();
 
-        if (selectedProduct == null) {
+        if (selectedProducts.isEmpty()) {
+            showError("Please add at least one product.");
             return;
         }
+        try {
+            for (ProductRow row : selectedProducts.values()) {
 
-        if (selectedProduct.getQuantity() == null ||
-                selectedProduct.getQuantity() <= 0) {
-            showError("This product is out of stock.");
-            return;
+                int quantity = row.getQuantity();
+
+                if (quantity <= 0) {
+                    showError("Quantity must be greater than zero.");
+                    return;
+                }
+
+                if (quantity > row.getProduct().getQuantity()) {
+                    showError(
+                            "Not enough stock for "
+                                    + row.getProduct().getName()
+                    );
+                    return;
+                }
+            }
+
+            Order order = orderService.createOrder();
+
+            for (ProductRow row : selectedProducts.values()) {
+
+                Product product = row.getProduct();
+
+                orderService.addProduct(
+                        order,
+                        product.getCode(),
+                        product.getName(),
+                        row.getQuantity()
+                );
+            }
+
+            for (ProductRow row : selectedProducts.values()) {
+
+                Product product = row.getProduct();
+
+                product.setQuantity(
+                        product.getQuantity() - row.getQuantity()
+                );
+
+                productService.update(product);
+            }
+
+            orderService.completeOrder(order);
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Order completed successfully!",
+                    "Success",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+
+            if (onProductSold != null) {
+                onProductSold.run();
+            }
+
+            dispose();
+
+        } catch (NumberFormatException e) {
+
+            showError("Please enter a valid quantity.");
+
+        } catch (Exception e) {
+
+            showError(
+                    "Cannot complete order: " + e.getMessage()
+            );
         }
-
-        selectedProduct.setQuantity(
-                selectedProduct.getQuantity() - 1
-        );
-
-        productService.update(selectedProduct);
-
-        onProductSold.run();
-
-        dispose();
     }
 
     private void showError(String message) {
