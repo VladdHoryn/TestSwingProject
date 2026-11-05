@@ -7,17 +7,21 @@ import org.example.ui.panel.SearchPanel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SellProductDialog extends JDialog {
     private final ProductService productService;
     private final OrderService orderService;
 
     private JPanel productsPanel;
+    private JComboBox<Product> productComboBox;
 
     private final Runnable onProductSold;
 
-    JComboBox<Product> productComboBox;
+    private final Map<Integer, ProductRow> selectedProducts =
+            new LinkedHashMap<>();
 
     public SellProductDialog(JFrame parent,
                              ProductService productService,
@@ -62,6 +66,16 @@ public class SellProductDialog extends JDialog {
         productComboBox = new JComboBox<>(
                 availableProducts.toArray(new Product[0])
         );
+
+        productsPanel = new JPanel();
+
+        productsPanel.setLayout(
+                new BoxLayout(productsPanel, BoxLayout.Y_AXIS)
+        );
+
+        productsPanel.setBorder(
+                BorderFactory.createEmptyBorder(5, 5, 5, 5)
+        );
     }
 
     private void initializeLayout(){
@@ -71,24 +85,88 @@ public class SellProductDialog extends JDialog {
 
         setLayout(new BorderLayout(10, 10));
 
-        JPanel panel = new JPanel(new FlowLayout());
+        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
-        panel.add(new JLabel("Select product:"));
-        panel.add(productComboBox);
+        JButton addButton = new JButton("Add product");
 
-        JPanel buttons = new JPanel();
+        topPanel.add(new JLabel("Select product:"));
+        topPanel.add(productComboBox);
+        topPanel.add(addButton);
+
+        addButton.addActionListener(e -> {
+            Product selectedProduct =
+                    (Product) productComboBox.getSelectedItem();
+
+            if (selectedProduct != null) {
+                addProductRow(selectedProduct);
+            }
+        });
+
+        JScrollPane scrollPane = new JScrollPane(productsPanel);
+
+        scrollPane.setPreferredSize(
+                new Dimension(500, 250)
+        );
+
+        scrollPane.setBorder(
+                BorderFactory.createTitledBorder(
+                        "Products in order"
+                )
+        );
+
+        JPanel buttonsPanel = new JPanel(
+                new FlowLayout(FlowLayout.RIGHT)
+        );
 
         JButton sell = new JButton("Sell");
         JButton cancel = new JButton("Cancel");
 
-        buttons.add(sell);
-        buttons.add(cancel);
+        buttonsPanel.add(sell);
+        buttonsPanel.add(cancel);
 
         sell.addActionListener(e -> sellProduct());
         cancel.addActionListener(e -> dispose());
 
-        add(panel, BorderLayout.CENTER);
-        add(buttons, BorderLayout.SOUTH);
+        add(topPanel, BorderLayout.NORTH);
+        add(scrollPane, BorderLayout.CENTER);
+        add(buttonsPanel, BorderLayout.SOUTH);
+
+        ((JPanel) getContentPane()).setBorder(
+                BorderFactory.createEmptyBorder(10, 10, 10, 10)
+        );
+    }
+
+    private void addProductRow(Product product) {
+        Integer code = product.getCode();
+
+        if (selectedProducts.containsKey(code)) {
+            showError("This product has already been added.");
+            return;
+        }
+
+        ProductRow productRow = new ProductRow(product);
+
+        selectedProducts.put(code, productRow);
+
+        productRow.getRemoveButton().addActionListener(e -> {
+            selectedProducts.remove(code);
+
+            productsPanel.remove(productRow);
+
+            productsPanel.revalidate();
+            productsPanel.repaint();
+        });
+
+        productRow.setMaximumSize(
+                new Dimension(Integer.MAX_VALUE, 55)
+        );
+
+        productRow.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        productsPanel.add(productRow);
+
+        productsPanel.revalidate();
+        productsPanel.repaint();
     }
 
     private void sellProduct(){
