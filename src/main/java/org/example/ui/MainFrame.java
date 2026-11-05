@@ -2,6 +2,9 @@ package org.example.ui;
 
 import org.example.model.Product;
 import org.example.service.ProductService;
+import org.example.ui.panel.ActionPanel;
+import org.example.ui.panel.ProductTablePanel;
+import org.example.ui.panel.SearchPanel;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -16,21 +19,23 @@ import java.util.List;
 public class MainFrame extends JFrame {
     private final ProductService service;
 
-    private JTextField searchField;
-
-    private JButton addButton;
-    private JButton sellButton;
-
-    private List<Product> originalProducts;
+    private final SearchPanel searchPanel;
+    private final ProductTablePanel tablePanel;
+    private final ActionPanel actionPanel;
 
 
-    public MainFrame(ProductService service) {
+    public MainFrame(SearchPanel searchPanel,
+                     ProductTablePanel tablePanel,
+                     ActionPanel actionPanel,
+                     ProductService service) {
         this.service = service;
 
-        initializeComponents();
+        this.searchPanel = new SearchPanel();
+        this.tablePanel = new ProductTablePanel();
+        this.actionPanel = new ActionPanel();
+
         initializeLayout();
         initializeListeners();
-        initializeSorting();
 
         setTitle("Products");
         setSize(1000, 600);
@@ -39,38 +44,13 @@ public class MainFrame extends JFrame {
         setVisible(true);
     }
 
-    private void initializeComponents() {
-        searchField = new JTextField();
-
-        addButton = new JButton("Add Product");
-        sellButton = new JButton("Sell TV");
-    }
-
     private void initializeLayout() {
+
         setLayout(new BorderLayout(10, 10));
 
-        JPanel searchPanel = new JPanel(new BorderLayout(10, 10));
-        searchPanel.setBorder(
-                BorderFactory.createEmptyBorder(10, 10, 5, 10)
-        );
-
-        searchPanel.add(
-                new JLabel("Search by code or brand:"),
-                BorderLayout.WEST
-        );
-
-        searchPanel.add(searchField, BorderLayout.CENTER);
-
         add(searchPanel, BorderLayout.NORTH);
-
-        JPanel buttonsPanel = new JPanel(
-                new FlowLayout(FlowLayout.CENTER, 15, 10)
-        );
-
-        buttonsPanel.add(addButton);
-        buttonsPanel.add(sellButton);
-
-        add(buttonsPanel, BorderLayout.SOUTH);
+        add(tablePanel, BorderLayout.CENTER);
+        add(actionPanel, BorderLayout.SOUTH);
     }
 
     private void initializeListeners() {
@@ -80,35 +60,6 @@ public class MainFrame extends JFrame {
 
         sellButton.addActionListener(e -> openSellProductDialog());
     }
-
-    private void initializeSorting() {
-
-
-    }
-
-//    private void applySorting(int column) {
-//
-//        List<Product> products = originalProducts.stream()
-//                .filter(product -> {
-//
-//                    String search = searchField.getText()
-//                            .trim()
-//                            .toLowerCase();
-//
-//                    return String.valueOf(product.getCode())
-//                            .toLowerCase()
-//                            .contains(search)
-//                            ||
-//                            product.getName()
-//                                    .toLowerCase()
-//                                    .contains(search);
-//                })
-//                .collect(java.util.stream.Collectors.toList());
-//
-//        sortProducts(products);
-//
-//        refreshTable(products);
-//    }
 
     private void openAddProductDialog() {
         JDialog dialog = new JDialog(
