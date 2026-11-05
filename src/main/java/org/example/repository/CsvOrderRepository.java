@@ -62,7 +62,7 @@ public class CsvOrderRepository implements OrderRepository{
                         )
                 );
 
-                order.addProduct(
+                order.restoreProduct(
                         productCode,
                         productName,
                         quantity
@@ -82,8 +82,6 @@ public class CsvOrderRepository implements OrderRepository{
     @Override
     public Order create(Order order) {
         try {
-            order.setId(getNextOrderId());
-
             List<Order> orders = findAll();
             orders.add(order);
 
@@ -164,21 +162,6 @@ public class CsvOrderRepository implements OrderRepository{
                     "Cannot delete order from CSV", e
             );
         }
-    }
-
-    private int getNextOrderId() throws IOException {
-        if (!Files.exists(csvPath)) {
-            return 1;
-        }
-
-        return Files.readAllLines(csvPath)
-                .stream()
-                .skip(1)
-                .filter(line -> !line.isBlank())
-                .map(line -> parseCsvLine(line)[0])
-                .mapToInt(Integer::parseInt)
-                .max()
-                .orElse(0) + 1;
     }
 
     private void rewriteCsv(List<Order> orders)

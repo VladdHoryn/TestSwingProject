@@ -36,8 +36,6 @@ public class ProductSortingController {
                                 sortStates[i] = SORT_DEFAULT;
                             }
                         }
-
-//                        applySorting(column);
                     }
                 }
         );

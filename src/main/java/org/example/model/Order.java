@@ -130,6 +130,21 @@ public class Order {
         this.orderedAt = LocalDateTime.now();
     }
 
+    public void restoreProduct(
+            Integer code,
+            String name,
+            Integer quantity
+    ) {
+        if (code == null || name == null ||
+                quantity == null || quantity <= 0) {
+            throw new IllegalArgumentException(
+                    "Invalid product data"
+            );
+        }
+
+        products.add(new ProductItem(code, name, quantity));
+    }
+
     @AllArgsConstructor
     @Getter
     @Setter
