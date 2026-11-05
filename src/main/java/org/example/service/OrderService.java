@@ -2,6 +2,7 @@ package org.example.service;
 
 import org.example.model.Order;
 import org.example.model.OrderStatus;
+import org.example.model.Product;
 import org.example.repository.OrderRepository;
 
 import java.util.Comparator;
@@ -10,12 +11,32 @@ import java.util.List;
 public class OrderService {
     private final OrderRepository orderRepository;
 
+    private static Integer highestCode = 0;
+
     public OrderService(OrderRepository orderRepository) {
+
         this.orderRepository = orderRepository;
+
+        findAll(); //Костиль, але мені потрібно назаначати Id
     }
 
+    public List<Order> findAll(){
+        List<Order> result = orderRepository.findAll();
+
+        for(var i : result){
+            if(i.getId() > highestCode)
+                highestCode = i.getId();
+        }
+
+        return result;
+    };
+
     public Order createOrder() {
-        return new Order();
+
+        Order newOrder =  new Order();
+        newOrder.setId(++highestCode);
+
+        return newOrder;
     }
 
     public void addProduct(
