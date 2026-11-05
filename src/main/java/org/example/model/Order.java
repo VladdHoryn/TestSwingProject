@@ -13,6 +13,8 @@ import java.util.Set;
 
 @Getter
 public class Order {
+    private Integer id;
+
     private Set<ProductItem> products;
 
     private OrderStatus status;
@@ -24,6 +26,23 @@ public class Order {
         this.products = new HashSet<>();
         this.status = OrderStatus.NOT_COMPLETED;
         this.createdAt = LocalDateTime.now();
+    }
+
+    public Order(
+            Integer id,
+            LocalDateTime createdAt,
+            LocalDateTime orderedAt,
+            OrderStatus status
+    ) {
+        this.id = id;
+        this.createdAt = createdAt;
+        this.orderedAt = orderedAt;
+        this.status = status;
+        this.products = new HashSet<>();
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public void addProduct(Product product, Integer quantity) {
