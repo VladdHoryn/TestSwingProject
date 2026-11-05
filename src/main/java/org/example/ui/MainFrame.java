@@ -61,6 +61,10 @@ public class MainFrame extends JFrame {
         add(searchPanel, BorderLayout.NORTH);
         add(tablePanel, BorderLayout.CENTER);
         add(actionPanel, BorderLayout.SOUTH);
+
+        getRootPane().setBorder(
+                BorderFactory.createEmptyBorder(10, 10, 10, 10)
+        );
     }
 
     private void initializeListeners(){

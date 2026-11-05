@@ -12,6 +12,8 @@ public class ProductTablePanel extends JPanel {
     private final DefaultTableModel tableModel;
 
     public ProductTablePanel(){
+        setLayout(new BorderLayout());
+
         String[] columns = {
                 "Code",
                 "Brand",
