@@ -58,10 +58,31 @@ public class ProductTableController {
     }
 
     public void loadProducts() {
+        SwingWorker<List<Product>, Void> worker = new SwingWorker<List<Product>, Void>() {
+            @Override
+            protected List<Product> doInBackground() throws Exception {
+                return service.findAll();
+            }
 
-        originalProducts = service.findAll();
+            @Override
+            protected void done() {
+                try{
 
-        searchProducts();
+                    originalProducts = get();
+                    searchProducts();
+
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    showError("Loading products was interrupted");
+
+                } catch (java.util.concurrent.ExecutionException e) {
+                    showError("Failed to load products: "
+                            + e.getCause().getMessage());
+                }
+            }
+        };
+
+        worker.execute();
     }
 
     private void searchProducts() {
@@ -89,5 +110,14 @@ public class ProductTableController {
         sortingController.sortProducts(filteredProducts);
 
         tablePanel.refreshTable(filteredProducts);
+    }
+
+    private void showError(String message) {
+        JOptionPane.showMessageDialog(
+                tablePanel,
+                message,
+                "Loading error",
+                JOptionPane.ERROR_MESSAGE
+        );
     }
 }
