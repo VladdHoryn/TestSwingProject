@@ -57,7 +57,7 @@ public class Order {
     @AllArgsConstructor
     @Getter
     @Setter
-    private class Pair {
+    private static class Pair {
         private Product product;
         private Integer quantity;
     }
