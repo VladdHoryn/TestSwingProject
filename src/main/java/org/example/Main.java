@@ -1,7 +1,9 @@
 package org.example;
 
 import org.example.model.Product;
+import org.example.repository.CsvOrderRepository;
 import org.example.repository.CsvProductRepository;
+import org.example.service.OrderService;
 import org.example.service.ProductService;
 import org.example.ui.MainFrame;
 
@@ -11,13 +13,20 @@ import java.nio.file.Path;
 public class Main {
     public static void main(String[] args) {
 
-        ProductService service =
+        ProductService productService =
                 new ProductService(
                         new CsvProductRepository(
                                 Path.of("./products.csv")
                         )
                 );
 
-        MainFrame mainFrame = new MainFrame(service);
+        OrderService orderService =
+                new OrderService(
+                        new CsvOrderRepository(
+                                Path.of("./orders.csv")
+                        )
+                );
+
+        MainFrame mainFrame = new MainFrame(productService, orderService);
     }
 }

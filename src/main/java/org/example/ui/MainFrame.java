@@ -1,6 +1,7 @@
 package org.example.ui;
 
 import org.example.model.Product;
+import org.example.service.OrderService;
 import org.example.service.ProductService;
 import org.example.ui.controller.ProductTableController;
 import org.example.ui.dialog.AddProductDialog;
@@ -20,7 +21,8 @@ import java.util.Comparator;
 import java.util.List;
 
 public class MainFrame extends JFrame {
-    private final ProductService service;
+    private final ProductService productService;
+    private final OrderService orderService;
 
     private final SearchPanel searchPanel;
     private final ProductTablePanel tablePanel;
@@ -28,15 +30,16 @@ public class MainFrame extends JFrame {
 
     private final ProductTableController tableController;
 
-    public MainFrame(ProductService service) {
-        this.service = service;
+    public MainFrame(ProductService productService, OrderService orderService) {
+        this.productService = productService;
+        this.orderService = orderService;
 
         this.searchPanel = new SearchPanel();
         this.tablePanel = new ProductTablePanel();
         this.actionPanel = new ActionPanel();
 
         tableController = new ProductTableController(
-                service,
+                productService,
                 tablePanel,
                 searchPanel.getSearchField()
         );
@@ -65,7 +68,7 @@ public class MainFrame extends JFrame {
 
             AddProductDialog dialog = new AddProductDialog(
                     this,
-                    service,
+                    productService,
                     tableController::loadProducts
             );
 
@@ -76,7 +79,8 @@ public class MainFrame extends JFrame {
 
             SellProductDialog dialog = new SellProductDialog(
                     this,
-                    service,
+                    productService,
+                    orderService,
                     tableController::loadProducts
             );
 

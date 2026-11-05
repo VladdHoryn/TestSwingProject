@@ -1,6 +1,7 @@
 package org.example.ui.dialog;
 
 import org.example.model.Product;
+import org.example.service.OrderService;
 import org.example.service.ProductService;
 import org.example.ui.panel.SearchPanel;
 
@@ -9,18 +10,24 @@ import java.awt.*;
 import java.util.List;
 
 public class SellProductDialog extends JDialog {
-    private final ProductService service;
+    private final ProductService productService;
+    private final OrderService orderService;
+
+    private JPanel productsPanel;
+
     private final Runnable onProductSold;
 
     JComboBox<Product> productComboBox;
 
     public SellProductDialog(JFrame parent,
-                             ProductService service,
+                             ProductService productService,
+                             OrderService orderService,
                              Runnable onProductSold){
 
         super(parent, "Sell TV", true);
 
-        this.service = service;
+        this.productService = productService;
+        this.orderService = orderService;
         this.onProductSold = onProductSold;
 
         initializeComponents();
@@ -31,7 +38,7 @@ public class SellProductDialog extends JDialog {
     }
 
     private void initializeComponents(){
-        List<Product> availableProducts = service.findAll()
+        List<Product> availableProducts = productService.findAll()
                 .stream()
                 .filter(p ->
                         p.getQuantity() != null &&
@@ -102,7 +109,7 @@ public class SellProductDialog extends JDialog {
                 selectedProduct.getQuantity() - 1
         );
 
-        service.update(selectedProduct);
+        productService.update(selectedProduct);
 
         onProductSold.run();
 
