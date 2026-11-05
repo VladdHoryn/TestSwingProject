@@ -2,6 +2,9 @@ package org.example.ui;
 
 import org.example.model.Product;
 import org.example.service.ProductService;
+import org.example.ui.controller.ProductTableController;
+import org.example.ui.dialog.AddProductDialog;
+import org.example.ui.dialog.SellProductDialog;
 import org.example.ui.panel.ActionPanel;
 import org.example.ui.panel.ProductTablePanel;
 import org.example.ui.panel.SearchPanel;
@@ -23,16 +26,20 @@ public class MainFrame extends JFrame {
     private final ProductTablePanel tablePanel;
     private final ActionPanel actionPanel;
 
+    private final ProductTableController tableController;
 
-    public MainFrame(SearchPanel searchPanel,
-                     ProductTablePanel tablePanel,
-                     ActionPanel actionPanel,
-                     ProductService service) {
+    public MainFrame(ProductService service) {
         this.service = service;
 
         this.searchPanel = new SearchPanel();
         this.tablePanel = new ProductTablePanel();
         this.actionPanel = new ActionPanel();
+
+        tableController = new ProductTableController(
+                service,
+                tablePanel,
+                searchPanel.getSearchField()
+        );
 
         initializeLayout();
         initializeListeners();
@@ -53,84 +60,27 @@ public class MainFrame extends JFrame {
         add(actionPanel, BorderLayout.SOUTH);
     }
 
-    private void openSellProductDialog() {
-        originalProducts = service.findAll();
+    private void initializeListeners(){
+        actionPanel.getAddButton().addActionListener(e -> {
 
-        List<Product> availableProducts = originalProducts.stream()
-                .filter(p -> p.getQuantity() != null && p.getQuantity() > 0)
-                .toList();
-
-        if (availableProducts.isEmpty()) {
-
-            JOptionPane.showMessageDialog(
+            AddProductDialog dialog = new AddProductDialog(
                     this,
-                    "There are no products available for sale.",
-                    "Information",
-                    JOptionPane.INFORMATION_MESSAGE
+                    service,
+                    tableController::loadProducts
             );
 
-            return;
-        }
-
-        JDialog dialog = new JDialog(
-                this,
-                "Sell TV",
-                true
-        );
-
-        dialog.setLayout(new BorderLayout(10, 10));
-
-        JPanel panel = new JPanel(new FlowLayout());
-
-        JComboBox<Product> productComboBox =
-                new JComboBox<>(availableProducts.toArray(new Product[0]));
-
-        panel.add(new JLabel("Select product:"));
-        panel.add(productComboBox);
-
-        JPanel buttons = new JPanel();
-
-        JButton sell = new JButton("Sell");
-        JButton cancel = new JButton("Cancel");
-
-        buttons.add(sell);
-        buttons.add(cancel);
-
-        sell.addActionListener(e -> {
-
-            Product selectedProduct =
-                    (Product) productComboBox.getSelectedItem();
-
-            if (selectedProduct == null) {
-                return;
-            }
-
-            if (selectedProduct.getQuantity() <= 0) {
-                JOptionPane.showMessageDialog(
-                        dialog,
-                        "This product is out of stock."
-                );
-                return;
-            }
-
-            selectedProduct.setQuantity(
-                    selectedProduct.getQuantity() - 1
-            );
-
-            service.update(selectedProduct);
-
-            loadProducts();
-
-            dialog.dispose();
+            dialog.setVisible(true);
         });
 
-        cancel.addActionListener(e -> dialog.dispose());
+        actionPanel.getSellButton().addActionListener(e -> {
 
-        dialog.add(panel, BorderLayout.CENTER);
-        dialog.add(buttons, BorderLayout.SOUTH);
+            SellProductDialog dialog = new SellProductDialog(
+                    this,
+                    service,
+                    tableController::loadProducts
+            );
 
-        dialog.pack();
-        dialog.setLocationRelativeTo(this);
-        dialog.setVisible(true);
+            dialog.setVisible(true);
+        });
     }
 }

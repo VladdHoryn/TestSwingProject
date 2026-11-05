@@ -12,6 +12,9 @@ public class ActionPanel extends JPanel{
                 new FlowLayout(FlowLayout.CENTER, 15, 10)
         );
 
+        addButton = new JButton("Add");
+        sellButton = new JButton("Sell");
+
         add(addButton);
         add(sellButton);
     }
