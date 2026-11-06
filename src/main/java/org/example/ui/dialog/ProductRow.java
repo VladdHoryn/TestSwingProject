@@ -8,7 +8,7 @@ import java.awt.*;
 public class ProductRow extends JPanel {
 
     private final Product product;
-    private final JTextField quantityField;
+    private final JSpinner quantityField;
     private final JButton removeButton;
 
     public ProductRow(Product product) {
@@ -47,7 +47,7 @@ public class ProductRow extends JPanel {
 
         add(stockLabel, gbc);
 
-        quantityField = new JTextField("1", 5);
+        quantityField = new JSpinner(new SpinnerNumberModel(1,1,100,1));
 
         gbc.gridx = 3;
 
@@ -66,11 +66,11 @@ public class ProductRow extends JPanel {
 
     public int getQuantity() {
         return Integer.parseInt(
-                quantityField.getText().trim()
+                quantityField.getValue().toString()
         );
     }
 
-    public JTextField getQuantityField() {
+    public JSpinner getQuantityField() {
         return quantityField;
     }
 

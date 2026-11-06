@@ -152,40 +152,11 @@ public class SellProductDialog extends JDialog {
 
         currentOrder.addProduct(productRow.getProduct(), productRow.getQuantity());
 
-        productRow.getQuantityField().getDocument()
-                .addDocumentListener(new javax.swing.event.DocumentListener() {
+        productRow.getQuantityField().addChangeListener(e -> {
+            int quantity = (Integer) productRow.getQuantityField().getValue();
 
-                    private void updateQuantity() {
-                        try {
-                            String value = productRow.getQuantityField()
-                                    .getText().trim();
-
-                            if (!value.isEmpty()) {
-                                int quantity = Integer.parseInt(value);
-
-                                if (quantity > 0) {
-                                    currentOrder.changeQuantity(code, quantity);
-                                }
-                            }
-                        } catch (NumberFormatException ignored) {
-                        }
-                    }
-
-                    @Override
-                    public void insertUpdate(javax.swing.event.DocumentEvent e) {
-                        updateQuantity();
-                    }
-
-                    @Override
-                    public void removeUpdate(javax.swing.event.DocumentEvent e) {
-                        updateQuantity();
-                    }
-
-                    @Override
-                    public void changedUpdate(javax.swing.event.DocumentEvent e) {
-                        updateQuantity();
-                    }
-                });
+            currentOrder.changeQuantity(code, quantity);
+        });
 
         productRow.getRemoveButton().addActionListener(e -> {
             currentOrder.removeProduct(code);
