@@ -24,6 +24,8 @@ public class SellProductDialog extends JDialog {
     private final Map<Integer, ProductRow> selectedProducts =
             new LinkedHashMap<>();
 
+    private Order currentOrder;
+
     public SellProductDialog(JFrame parent,
                              ProductService productService,
                              OrderService orderService,
@@ -34,6 +36,7 @@ public class SellProductDialog extends JDialog {
         this.productService = productService;
         this.orderService = orderService;
         this.onProductSold = onProductSold;
+        this.currentOrder = orderService.createOrder();
 
         initializeComponents();
         initializeLayout();
@@ -140,17 +143,19 @@ public class SellProductDialog extends JDialog {
     private void addProductRow(Product product) {
         Integer code = product.getCode();
 
-        if (selectedProducts.containsKey(code)) {
+        if (currentOrder.hasProduct(code)) {
             showError("This product has already been added.");
             return;
         }
 
         ProductRow productRow = new ProductRow(product);
 
-        selectedProducts.put(code, productRow);
+//        selectedProducts.put(code, productRow);
+        currentOrder.addProduct(productRow.getProduct(), productRow.getQuantity());
 
         productRow.getRemoveButton().addActionListener(e -> {
-            selectedProducts.remove(code);
+//            selectedProducts.remove(code);
+            currentOrder.removeProduct(code);
 
             productsPanel.remove(productRow);
 
@@ -172,55 +177,32 @@ public class SellProductDialog extends JDialog {
 
     private void sellProduct(){
 
-        if (selectedProducts.isEmpty()) {
+        if (currentOrder.getProducts().isEmpty()) {
             showError("Please add at least one product.");
             return;
         }
         try {
-            for (ProductRow row : selectedProducts.values()) {
+            String validationResult = productService.validateStock(currentOrder.getProducts());// Збирає вcі Product, у яких недостатньо одиниць на сладі
 
-                int quantity = row.getQuantity();
+
+            if (validationResult != null && !validationResult.isEmpty()) {
+                showError("Not enough stock for " + validationResult);
+                return;
+            }
+
+            for (Order.ProductItem product : currentOrder.getProducts()) {
+
+                int quantity = product.getQuantity();
 
                 if (quantity <= 0) {
                     showError("Quantity must be greater than zero.");
                     return;
                 }
-
-                if (quantity > row.getProduct().getQuantity()) {
-                    showError(
-                            "Not enough stock for "
-                                    + row.getProduct().getName()
-                    );
-                    return;
-                }
             }
 
-            Order order = orderService.createOrder();
+            productService.updateStock(currentOrder);
 
-            for (ProductRow row : selectedProducts.values()) {
-
-                Product product = row.getProduct();
-
-                orderService.addProduct(
-                        order,
-                        product.getCode(),
-                        product.getName(),
-                        row.getQuantity()
-                );
-            }
-
-            for (ProductRow row : selectedProducts.values()) {
-
-                Product product = row.getProduct();
-
-                product.setQuantity(
-                        product.getQuantity() - row.getQuantity()
-                );
-
-                productService.update(product);
-            }
-
-            orderService.completeOrder(order);
+            orderService.completeOrder(currentOrder);
 
             JOptionPane.showMessageDialog(
                     this,

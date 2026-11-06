@@ -70,6 +70,10 @@ public class ProductRow extends JPanel {
         );
     }
 
+    public JTextField getQuantityField() {
+        return quantityField;
+    }
+
     public JButton getRemoveButton() {
         return removeButton;
     }

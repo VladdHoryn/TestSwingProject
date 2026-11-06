@@ -1,6 +1,7 @@
 package org.example.model;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -145,12 +146,40 @@ public class Order {
         products.add(new ProductItem(code, name, quantity));
     }
 
+    public Boolean hasProduct(Integer code){
+        for(var i : products){
+            if(i.code.equals(code))
+                return true;
+        }
+
+        return false;
+    }
+
     @AllArgsConstructor
     @Getter
     @Setter
+    @EqualsAndHashCode
     public static class ProductItem  {
         private Integer code;
         private String name;
         private Integer quantity;
+
+        public ProductItem(Product product) {
+            this.code = product.getCode();
+            this.name = product.getName();
+            this.quantity = product.getQuantity();
+        }
+
+        public Boolean equalProduct(Product product) {
+            if(this.code.equals(product.getCode()) && this.name.equals(product.getName()))
+                return true;
+            return false;
+        }
+
+        public Boolean equalProduct(ProductItem product) {
+            if(this.code.equals(product.getCode()) && this.name.equals(product.getName()))
+                return true;
+            return false;
+        }
     }
 }
