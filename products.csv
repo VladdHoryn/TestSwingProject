@@ -1,7 +1,7 @@
 code,brand,diagonal_size,width,height,display_technology,price,quantity
-1,Samsung,30.0,145.1,80.0,LED,234.23,2
-2,Samsung,28.0,145.2,80.0,LCD,232.23,2
-3,Iphone,26.0,10.0,10.0,LCD,300.0,0
+1,Samsung,30.0,145.1,80.0,LED,234.23,12
+2,Samsung,28.0,145.2,80.0,LCD,232.23,21
+3,Iphone,26.0,10.0,10.0,LCD,300.0,65
 4,Sam,10.0,5.0,5.0,OLED,150.0,5
-5,SmthNew,15.0,5.0,5.0,LED,254.0,20
-6,Honda,18.0,6.0,7.0,LED,1000.0,83
+5,SmthNew,15.0,5.0,5.0,LED,254.0,18
+6,Honda,18.0,6.0,7.0,LED,1000.0,75
