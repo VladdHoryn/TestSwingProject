@@ -7,11 +7,14 @@ import org.example.service.OrderService;
 import org.example.service.ProductService;
 import org.example.ui.MainFrame;
 
+import javax.swing.*;
 import java.math.BigDecimal;
 import java.nio.file.Path;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
         ProductService productService =
                 new ProductService(
