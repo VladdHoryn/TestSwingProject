@@ -25,7 +25,7 @@ public class OrderHistoryController {
 
         orderHistoryPanel.setSelectionListener(this::handleOrderSelection);
 
-        loadOrders();
+        refreshOrders();
     }
 
     private void handleOrderSelection(int modelRow) {
@@ -39,7 +39,7 @@ public class OrderHistoryController {
         secondaryController.loadProductItems(selectedOrder.getId());
     }
 
-    private void loadOrders() {
+    public void refreshOrders() {
         SwingWorker<List<Order>, Void> worker = new SwingWorker<List<Order>, Void>(){
 
             @Override

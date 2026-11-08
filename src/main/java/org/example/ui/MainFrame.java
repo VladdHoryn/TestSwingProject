@@ -45,7 +45,8 @@ public class MainFrame extends JFrame {
         this.tabbedPane = new TabbedPane(
                 new ProductsPanel(productService, orderService),
                 new OrderPanel(orderHistoryPanel, orderHistorySecondaryPanel,
-                        orderHistoryController, orderHistorySecondaryController));
+                        orderHistoryController, orderHistorySecondaryController),
+                orderHistoryController);
 
         initializeLayout();
 
