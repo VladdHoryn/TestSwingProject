@@ -1,13 +1,21 @@
 package org.example.ui.panel;
 
+import org.example.ui.controller.OrderHistoryController;
+
 import javax.swing.*;
 import java.awt.*;
 
 public class OrderPanel extends JPanel {
     private final OrderHistoryPanel orderHistoryPanel;
 
-    public OrderPanel(OrderHistoryPanel orderHistoryPanel) {
+    private final OrderHistoryController orderHistoryController;
+
+    public OrderPanel(
+            OrderHistoryPanel orderHistoryPanel,
+            OrderHistoryController orderHistoryController
+    ) {
         this.orderHistoryPanel = orderHistoryPanel;
+        this.orderHistoryController = orderHistoryController;
 
         initializeLayout();
     }

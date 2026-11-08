@@ -4,6 +4,7 @@ import org.example.model.Product;
 import org.example.service.OrderService;
 import org.example.service.ProductService;
 import org.example.ui.Tabbs.TabbedPane;
+import org.example.ui.controller.OrderHistoryController;
 import org.example.ui.controller.ProductTableController;
 import org.example.ui.dialog.AddProductDialog;
 import org.example.ui.dialog.SellProductDialog;
@@ -24,9 +25,11 @@ public class MainFrame extends JFrame {
 
 
     public MainFrame(ProductService productService, OrderService orderService) {
+        OrderHistoryPanel orderHistoryPanel = new OrderHistoryPanel();
+
         this.tabbedPane = new TabbedPane(
                 new ProductsPanel(productService, orderService),
-                new OrderPanel(new OrderHistoryPanel()));
+                new OrderPanel(orderHistoryPanel, new OrderHistoryController(orderService, orderHistoryPanel)));
 
         initializeLayout();
 
