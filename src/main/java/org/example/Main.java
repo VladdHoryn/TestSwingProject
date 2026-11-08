@@ -32,6 +32,6 @@ public class Main {
                         )
                 );
 
-        MainFrame mainFrame = new MainFrame(productService, orderService, new OrderHistorySecondaryController(orderService, new OrderHistorySecondaryPanel()));
+        MainFrame mainFrame = new MainFrame(productService, orderService);
     }
 }

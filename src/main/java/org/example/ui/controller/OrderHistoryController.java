@@ -23,10 +23,16 @@ public class OrderHistoryController {
         this.orderHistoryPanel = orderHistoryPanel;
         this.secondaryController = secondaryController;
 
+        orderHistoryPanel.setSelectionListener(this::handleOrderSelection);
+
         loadOrders();
     }
 
     private void handleOrderSelection(int modelRow) {
+        if (modelRow == -1 || orders == null || modelRow >= orders.size()) {
+            secondaryController.clearProducts();
+            return;
+        }
 
         Order selectedOrder = orders.get(modelRow);
 

@@ -9,13 +9,14 @@ import org.example.ui.panel.ProductTablePanel;
 import javax.swing.*;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 
 public class OrderHistorySecondaryController {
     private final OrderService orderService;
     private final OrderHistorySecondaryPanel orderHistorySecondaryPanel;
 
-    private List<Order.ProductItem> products;
+    private SwingWorker<List<Order.ProductItem>, Void> worker;
 
     public OrderHistorySecondaryController(
             OrderService orderService,
@@ -25,17 +26,28 @@ public class OrderHistorySecondaryController {
     }
 
     public void loadProductItems(Integer orderId) {
-        SwingWorker<List<Order.ProductItem>, Void> worker = new SwingWorker<List<Order.ProductItem>, Void>(){
+        if (worker != null) {
+            worker.cancel(true);
+        }
+
+        worker = new SwingWorker<List<Order.ProductItem>, Void>(){
 
             @Override
             protected List<Order.ProductItem> doInBackground() throws Exception {
-                return orderService.findById(orderId).get().getProducts().stream().toList();
+                return orderService.findById(orderId)
+                        .get()
+                        .getProducts()
+                        .stream().toList();
             }
 
             @Override
             protected void done() {
+                if (isCancelled()) {
+                    return;
+                }
+
                 try{
-                    products = get();
+                    List<Order.ProductItem> products = get();
 
                     orderHistorySecondaryPanel.refreshTable(products);
                 } catch (ExecutionException e) {
@@ -44,11 +56,23 @@ public class OrderHistorySecondaryController {
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                     showError("Loading products was interrupted");
+                } catch (CancellationException ignored) {
+
                 }
             }
         };
 
         worker.execute();
+    }
+
+    public void clearProducts() {
+
+        if (worker != null) {
+            worker.cancel(true);
+            worker = null;
+        }
+
+        orderHistorySecondaryPanel.clearTable();
     }
 
     private void showError(String message) {

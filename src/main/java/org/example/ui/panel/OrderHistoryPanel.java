@@ -18,12 +18,9 @@ public class OrderHistoryPanel extends JPanel {
 
     private Consumer<Integer> selectionListener;
 
-    private final OrderHistorySecondaryController orderHistorySecondaryController;
-
-    public OrderHistoryPanel(OrderHistorySecondaryController orderHistorySecondaryController) {
+    public OrderHistoryPanel() {
         setLayout(new BorderLayout());
 
-        this.orderHistorySecondaryController = orderHistorySecondaryController;
 
         String[] columns = Arrays.stream(OrderColumn.values())
                 .map(OrderColumn::getTitle)
@@ -56,12 +53,12 @@ public class OrderHistoryPanel extends JPanel {
 
             int selectedRow = table.getSelectedRow();
 
-            if (selectedRow != -1) {
-                int modelRow = table.convertRowIndexToModel(selectedRow);
+            int modelRow = selectedRow == -1
+                    ? -1
+                    : table.convertRowIndexToModel(selectedRow);
 
-                if (selectionListener != null) {
-                    selectionListener.accept(modelRow);
-                }
+            if (selectionListener != null) {
+                selectionListener.accept(modelRow);
             }
         });
     }
@@ -75,6 +72,7 @@ public class OrderHistoryPanel extends JPanel {
     }
 
     public void refreshTable(List<Order> orders) {
+        table.clearSelection();
         model.setRowCount(0);
 
         for (Order order : orders) {

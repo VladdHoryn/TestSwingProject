@@ -38,6 +38,10 @@ public class OrderHistorySecondaryPanel extends JPanel {
         return table;
     }
 
+    public void clearTable() {
+        model.setRowCount(0);
+    }
+
     public void refreshTable(List<Order.ProductItem> products) {
         model.setRowCount(0);
 

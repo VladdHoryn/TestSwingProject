@@ -31,11 +31,15 @@ public class OrderPanel extends JPanel {
 
         setLayout(new BorderLayout(10, 10));
 
-        add(orderHistoryPanel, BorderLayout.NORTH);
-        add(orderHistorySecondaryPanel, BorderLayout.CENTER);
-
-        setBorder(
-                BorderFactory.createEmptyBorder(10, 10, 10, 10)
+        JSplitPane splitPane = new JSplitPane(
+                JSplitPane.VERTICAL_SPLIT,
+                orderHistoryPanel,
+                orderHistorySecondaryPanel
         );
+
+        splitPane.setResizeWeight(0.6);
+        splitPane.setDividerLocation(0.6);
+
+        add(splitPane, BorderLayout.CENTER);
     }
 }
