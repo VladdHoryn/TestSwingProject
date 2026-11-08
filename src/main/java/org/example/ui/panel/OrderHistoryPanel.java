@@ -3,19 +3,27 @@ package org.example.ui.panel;
 import org.example.model.Order;
 import org.example.model.Product;
 import org.example.service.OrderService;
+import org.example.ui.controller.OrderHistorySecondaryController;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class OrderHistoryPanel extends JPanel {
     private final JTable table;
     private final DefaultTableModel model;
 
-    public OrderHistoryPanel() {
+    private Consumer<Integer> selectionListener;
+
+    private final OrderHistorySecondaryController orderHistorySecondaryController;
+
+    public OrderHistoryPanel(OrderHistorySecondaryController orderHistorySecondaryController) {
         setLayout(new BorderLayout());
+
+        this.orderHistorySecondaryController = orderHistorySecondaryController;
 
         String[] columns = Arrays.stream(OrderColumn.values())
                 .map(OrderColumn::getTitle)
@@ -33,7 +41,33 @@ public class OrderHistoryPanel extends JPanel {
         table.setAutoCreateRowSorter(false);
 
         JScrollPane scrollPane = new JScrollPane(table);
+
+        initializeListeners();
+
         add(scrollPane, BorderLayout.CENTER);
+    }
+
+    private void initializeListeners() {
+        table.getSelectionModel().addListSelectionListener(e -> {
+
+            if (e.getValueIsAdjusting()) {
+                return;
+            }
+
+            int selectedRow = table.getSelectedRow();
+
+            if (selectedRow != -1) {
+                int modelRow = table.convertRowIndexToModel(selectedRow);
+
+                if (selectionListener != null) {
+                    selectionListener.accept(modelRow);
+                }
+            }
+        });
+    }
+
+    public void setSelectionListener(Consumer<Integer> listener) {
+        this.selectionListener = listener;
     }
 
     public JTable getTable(){
@@ -49,7 +83,9 @@ public class OrderHistoryPanel extends JPanel {
                     order.getId(),
                     order.getStatus().toString(),
                     order.getCreatedAt().toString(),
-                    order.getOrderedAt().toString(),
+                    order.getOrderedAt() != null
+                            ? order.getOrderedAt().toString()
+                            : "-"
             };
 
            model.addRow(row);

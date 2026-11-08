@@ -24,7 +24,7 @@ public class OrderHistorySecondaryController {
         this.orderHistorySecondaryPanel = orderHistorySecondaryPanel;
     }
 
-    private void loadProductItem(Integer orderId) {
+    public void loadProductItems(Integer orderId) {
         SwingWorker<List<Order.ProductItem>, Void> worker = new SwingWorker<List<Order.ProductItem>, Void>(){
 
             @Override

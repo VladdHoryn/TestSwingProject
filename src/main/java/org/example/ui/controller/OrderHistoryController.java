@@ -11,16 +11,26 @@ import java.util.concurrent.ExecutionException;
 public class OrderHistoryController {
     private final OrderService orderService;
     private final OrderHistoryPanel orderHistoryPanel;
+    private final OrderHistorySecondaryController secondaryController;
 
     private List<Order> orders;
 
     public OrderHistoryController(
             OrderService orderService,
-            OrderHistoryPanel orderHistoryPanel) {
+            OrderHistoryPanel orderHistoryPanel,
+            OrderHistorySecondaryController secondaryController) {
         this.orderService = orderService;
         this.orderHistoryPanel = orderHistoryPanel;
+        this.secondaryController = secondaryController;
 
         loadOrders();
+    }
+
+    private void handleOrderSelection(int modelRow) {
+
+        Order selectedOrder = orders.get(modelRow);
+
+        secondaryController.loadProductItems(selectedOrder.getId());
     }
 
     private void loadOrders() {
