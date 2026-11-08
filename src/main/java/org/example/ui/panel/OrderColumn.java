@@ -4,10 +4,7 @@ public enum OrderColumn {
     ORDER_ID("order_id"),
     CREATED_AT("created_at"),
     ORDERED_AT("ordered_at"),
-    STATUS("status"),
-    PRODUCT_CODE("product_code"),
-    PRODUCT_NAME("product_name"),
-    QUANTITY("quantity");
+    STATUS("status");
 
     private final String title;
 
