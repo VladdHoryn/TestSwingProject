@@ -27,10 +27,23 @@ public class MainFrame extends JFrame {
 
     public MainFrame(ProductService productService, OrderService orderService, OrderHistorySecondaryController orderHistorySecondaryController) {
         OrderHistoryPanel orderHistoryPanel = new OrderHistoryPanel(orderHistorySecondaryController);
+        OrderHistorySecondaryPanel orderHistorySecondaryPanel = new OrderHistorySecondaryPanel();
+        OrderHistoryController orderHistoryController =
+                new OrderHistoryController(
+                        orderService,
+                        orderHistoryPanel,
+                        orderHistorySecondaryController
+                );
+        OrderHistorySecondaryController orderHistorySecondaryController1 =
+                new OrderHistorySecondaryController(
+                        orderService,
+                        orderHistorySecondaryPanel
+                );
 
         this.tabbedPane = new TabbedPane(
                 new ProductsPanel(productService, orderService),
-                new OrderPanel(orderHistoryPanel, new OrderHistoryController(orderService, orderHistoryPanel, orderHistorySecondaryController)));
+                new OrderPanel(orderHistoryPanel, orderHistorySecondaryPanel,
+                        orderHistoryController, orderHistorySecondaryController));
 
         initializeLayout();
 
