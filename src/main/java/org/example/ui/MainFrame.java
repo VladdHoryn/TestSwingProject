@@ -7,10 +7,7 @@ import org.example.ui.Tabbs.TabbedPane;
 import org.example.ui.controller.ProductTableController;
 import org.example.ui.dialog.AddProductDialog;
 import org.example.ui.dialog.SellProductDialog;
-import org.example.ui.panel.ActionPanel;
-import org.example.ui.panel.ProductTablePanel;
-import org.example.ui.panel.ProductsPanel;
-import org.example.ui.panel.SearchPanel;
+import org.example.ui.panel.*;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -27,7 +24,9 @@ public class MainFrame extends JFrame {
 
 
     public MainFrame(ProductService productService, OrderService orderService) {
-        this.tabbedPane = new TabbedPane(new ProductsPanel(productService, orderService));
+        this.tabbedPane = new TabbedPane(
+                new ProductsPanel(productService, orderService),
+                new OrderPanel(new OrderHistoryPanel()));
 
         initializeLayout();
 
