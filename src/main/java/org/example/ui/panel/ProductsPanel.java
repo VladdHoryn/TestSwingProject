@@ -45,7 +45,7 @@ public class ProductsPanel extends JPanel {
         add(tablePanel, BorderLayout.CENTER);
         add(actionPanel, BorderLayout.SOUTH);
 
-        getRootPane().setBorder(
+        setBorder(
                 BorderFactory.createEmptyBorder(10, 10, 10, 10)
         );
     }

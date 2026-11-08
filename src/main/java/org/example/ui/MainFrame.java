@@ -3,11 +3,13 @@ package org.example.ui;
 import org.example.model.Product;
 import org.example.service.OrderService;
 import org.example.service.ProductService;
+import org.example.ui.Tabbs.TabbedPane;
 import org.example.ui.controller.ProductTableController;
 import org.example.ui.dialog.AddProductDialog;
 import org.example.ui.dialog.SellProductDialog;
 import org.example.ui.panel.ActionPanel;
 import org.example.ui.panel.ProductTablePanel;
+import org.example.ui.panel.ProductsPanel;
 import org.example.ui.panel.SearchPanel;
 
 import javax.swing.*;
@@ -21,33 +23,15 @@ import java.util.Comparator;
 import java.util.List;
 
 public class MainFrame extends JFrame {
-    private final ProductService productService;
-    private final OrderService orderService;
+    private final TabbedPane tabbedPane;
 
-    private final SearchPanel searchPanel;
-    private final ProductTablePanel tablePanel;
-    private final ActionPanel actionPanel;
-
-    private final ProductTableController tableController;
 
     public MainFrame(ProductService productService, OrderService orderService) {
-        this.productService = productService;
-        this.orderService = orderService;
-
-        this.searchPanel = new SearchPanel();
-        this.tablePanel = new ProductTablePanel();
-        this.actionPanel = new ActionPanel();
-
-        tableController = new ProductTableController(
-                productService,
-                tablePanel,
-                searchPanel.getSearchField()
-        );
+        this.tabbedPane = new TabbedPane(new ProductsPanel(productService, orderService));
 
         initializeLayout();
-        initializeListeners();
 
-        setTitle("Products");
+        setTitle("Inventory Management");
         setSize(1000, 600);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -56,39 +40,8 @@ public class MainFrame extends JFrame {
 
     private void initializeLayout() {
 
-        setLayout(new BorderLayout(10, 10));
+        setLayout(new BorderLayout());
 
-        add(searchPanel, BorderLayout.NORTH);
-        add(tablePanel, BorderLayout.CENTER);
-        add(actionPanel, BorderLayout.SOUTH);
-
-        getRootPane().setBorder(
-                BorderFactory.createEmptyBorder(10, 10, 10, 10)
-        );
-    }
-
-    private void initializeListeners(){
-        actionPanel.getAddButton().addActionListener(e -> {
-
-            AddProductDialog dialog = new AddProductDialog(
-                    this,
-                    productService,
-                    tableController::loadProducts
-            );
-
-            dialog.setVisible(true);
-        });
-
-        actionPanel.getSellButton().addActionListener(e -> {
-
-            SellProductDialog dialog = new SellProductDialog(
-                    this,
-                    productService,
-                    orderService,
-                    tableController::loadProducts
-            );
-
-            dialog.setVisible(true);
-        });
+        add(tabbedPane, BorderLayout.CENTER);
     }
 }
