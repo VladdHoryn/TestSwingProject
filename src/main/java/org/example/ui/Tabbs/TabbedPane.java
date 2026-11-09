@@ -32,6 +32,12 @@ public class TabbedPane extends JTabbedPane {
 
         addChangeListener(e -> {
 
+            if (getSelectedComponent() == dvdPanel) {
+                dvdPanel.startAnimation();
+            } else {
+                dvdPanel.stopAnimation();
+            }
+
             if (getSelectedComponent() == orderPanel) {
                 orderHistoryController.refreshOrders();
             }
