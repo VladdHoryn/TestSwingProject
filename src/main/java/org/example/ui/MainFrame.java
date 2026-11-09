@@ -46,7 +46,9 @@ public class MainFrame extends JFrame {
                 new ProductsPanel(productService, orderService),
                 new OrderPanel(orderHistoryPanel, orderHistorySecondaryPanel,
                         orderHistoryController, orderHistorySecondaryController),
-                orderHistoryController);
+                orderHistoryController,
+                new DVDPanel()
+        );
 
         initializeLayout();
 
