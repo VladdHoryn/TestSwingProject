@@ -7,7 +7,7 @@ import java.awt.*;
 
 public class DVDPanel extends JPanel {
     private static final int HEIGHT = 50;
-    private static final int WIDTH = 100;
+    private static final int WIDTH = 80;
 
     private int x = 100;
     private int y = 100;

@@ -14,10 +14,10 @@ public class DVDAnimation implements Runnable {
     private double x = 100;
     private double y = 100;
 
-    private double vx = 70;
-    private double vy = 30;
+    private double vx = 150;
+    private double vy = 100;
 
-    private final int width = 100;
+    private final int width = 80;
     private final int height = 50;
 
     private final DVDPanel panel;
