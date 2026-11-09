@@ -14,6 +14,8 @@ public class DVDPanel extends JPanel {
 
     private final DVDAnimation animation;
 
+    private Color dvdColor = Color.BLACK;
+
     public DVDPanel() {
         setBackground(Color.WHITE);
 
@@ -27,13 +29,18 @@ public class DVDPanel extends JPanel {
         repaint();
     }
 
+    public void updateColor(Color color) {
+        this.dvdColor = color;
+        repaint();
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g.create();
 
         try{
-            g2.setColor(Color.BLACK);
+            g2.setColor(dvdColor);
             g2.fillRect((int) x, (int) y, WIDTH, HEIGHT);
         } finally {
             g2.dispose();

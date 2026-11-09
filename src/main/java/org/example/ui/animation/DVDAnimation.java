@@ -4,6 +4,8 @@ package org.example.ui.animation;
 import org.example.ui.panel.DVDPanel;
 
 import javax.swing.*;
+import java.awt.*;
+import java.util.Random;
 
 public class DVDAnimation implements Runnable {
 
@@ -19,6 +21,8 @@ public class DVDAnimation implements Runnable {
     private final int height = 50;
 
     private final DVDPanel panel;
+
+    private final Random random = new Random();
 
     public DVDAnimation(DVDPanel panel) {
         this.panel = panel;
@@ -44,21 +48,37 @@ public class DVDAnimation implements Runnable {
             if (x < 0) {
                 x = 0;
                 vx = -vx;
+
+                SwingUtilities.invokeLater(() -> {
+                    panel.updateColor(this.generateRandomColor());
+                });
             }
 
             if (x + width > panel.getWidth()) {
                 x = Math.max(0, panel.getWidth() - width);
                 vx = -vx;
+
+                SwingUtilities.invokeLater(() -> {
+                    panel.updateColor(this.generateRandomColor());
+                });
             }
 
             if (y < 0) {
                 y = 0;
                 vy = -vy;
+
+                SwingUtilities.invokeLater(() -> {
+                    panel.updateColor(this.generateRandomColor());
+                });
             }
 
             if (y + height > panel.getHeight()) {
                 y = Math.max(0, panel.getHeight() - height);
                 vy = -vy;
+
+                SwingUtilities.invokeLater(() -> {
+                    panel.updateColor(this.generateRandomColor());
+                });
             }
 
             int drawX = (int) x;
@@ -88,6 +108,14 @@ public class DVDAnimation implements Runnable {
 
     public void stop() {
         running = false;
+    }
+
+    private Color generateRandomColor() {
+        return new Color(
+                random.nextInt(256),
+                random.nextInt(256),
+                random.nextInt(256)
+        );
     }
 }
 
