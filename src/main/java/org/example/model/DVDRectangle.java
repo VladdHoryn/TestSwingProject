@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.example.listener.AnimationListener;
 
 import javax.swing.*;
+import java.awt.*;
 
 @AllArgsConstructor
 @Getter
@@ -25,7 +26,20 @@ public class DVDRectangle {
     private final int panelWidth;
     private final int panelHeight;
 
-    private final AnimationCalculations calculations;
+    private Color color;
+
+    private AnimationCalculations calculations;
+
+    public DVDRectangle(int panelWidth, int panelHeight) {
+        this.panelWidth = panelWidth;
+        this.panelHeight = panelHeight;
+
+        this.color = Color.BLACK;
+    }
+
+    public void setAnimationListener(AnimationListener listener) {
+        calculations.setListener(listener);
+    }
 
     public DVDRectangle(AnimationListener listener, int panelWidth, int panelHeight) {
         calculations = new AnimationCalculations(listener);
@@ -35,8 +49,8 @@ public class DVDRectangle {
     }
 
     public class AnimationCalculations implements Runnable {
-
-        private final AnimationListener listener;
+        @Setter
+        private AnimationListener listener;
 
         private Boolean changeColor = false;
 
@@ -92,7 +106,7 @@ public class DVDRectangle {
                 }
 
                 if(changeColor){
-                    listener.onColorUpdated();
+                    color = this.getRandomColor();
                     changeColor = false;
                 }
 
@@ -105,6 +119,14 @@ public class DVDRectangle {
                     break;
                 }
             }
+        }
+
+        private Color getRandomColor(){
+            return new Color(
+                    (int) (Math.random() * 256),
+                    (int) (Math.random() * 256),
+                    (int) (Math.random() * 256)
+            );
         }
 
         public void start() {

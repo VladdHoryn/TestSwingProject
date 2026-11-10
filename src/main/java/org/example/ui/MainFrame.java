@@ -1,9 +1,11 @@
 package org.example.ui;
 
+import org.example.model.DVDRectangle;
 import org.example.model.Product;
 import org.example.service.OrderService;
 import org.example.service.ProductService;
 import org.example.ui.Tabbs.TabbedPane;
+import org.example.ui.controller.DVDController;
 import org.example.ui.controller.OrderHistoryController;
 import org.example.ui.controller.OrderHistorySecondaryController;
 import org.example.ui.controller.ProductTableController;
@@ -42,12 +44,20 @@ public class MainFrame extends JFrame {
                         orderHistorySecondaryController
                 );
 
+        DVDRectangle dvdRectangle = new DVDRectangle(800, 600);
+        DVDPanel dvdPanel = new DVDPanel(dvdRectangle);
+
+        DVDController dvdController =
+                new DVDController(dvdRectangle, dvdPanel);
+
+        dvdController.setPanel(dvdPanel);
+
         this.tabbedPane = new TabbedPane(
                 new ProductsPanel(productService, orderService),
                 new OrderPanel(orderHistoryPanel, orderHistorySecondaryPanel,
                         orderHistoryController, orderHistorySecondaryController),
                 orderHistoryController,
-                new DVDPanel()
+                dvdPanel
         );
 
         initializeLayout();

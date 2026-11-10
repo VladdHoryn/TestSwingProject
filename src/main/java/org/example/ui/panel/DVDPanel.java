@@ -1,7 +1,8 @@
 package org.example.ui.panel;
 
+import lombok.Setter;
 import org.example.model.DVDRectangle;
-import org.example.ui.controller.DVDAnimation;
+import org.example.ui.controller.DVDController;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,16 +10,25 @@ import java.awt.*;
 public class DVDPanel extends JPanel {
     private DVDRectangle rect;
 
-    private final DVDAnimation animation;
+    @Setter
+    private DVDController controller;
 
     private Color dvdColor = Color.BLACK;
 
-    public DVDPanel() {
+    public DVDPanel(DVDRectangle rect) {
         setBackground(Color.WHITE);
 
-        rect = new DVDRectangle();
+        this.rect = rect;
 
-        animation = new DVDAnimation(this, rect);
+        setLayout(new BorderLayout());
+    }
+
+    public DVDPanel(DVDRectangle rect, DVDController controller) {
+        setBackground(Color.WHITE);
+
+        this.rect = rect;
+        this.controller = controller;
+
         setLayout(new BorderLayout());
     }
 
@@ -39,18 +49,16 @@ public class DVDPanel extends JPanel {
         Graphics2D g2 = (Graphics2D) g.create();
 
         try{
-            g2.setColor(dvdColor);
+            g2.setColor(rect.getColor());
             g2.fillRect((int) rect.getX(), (int) rect.getY(), rect.getWidth(), rect.getHeight());
         } finally {
             g2.dispose();
         }
     }
 
-    public void startAnimation() {
-        animation.start();
-    }
+    public void startAnimation() { controller.startAnimation(); }
 
     public void stopAnimation() {
-        animation.stop();
+        controller.stopAnimation();
     }
 }
