@@ -23,6 +23,7 @@ public class DVDController implements AnimationListener {
         this.panel = panel;
 
         rectangle.setAnimationListener(this);
+        panel.setController(this);
     }
 
 

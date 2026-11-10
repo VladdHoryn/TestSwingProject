@@ -28,11 +28,13 @@ public class DVDRectangle {
 
     private Color color;
 
-    private AnimationCalculations calculations;
+    private final AnimationCalculations calculations;
 
     public DVDRectangle(int panelWidth, int panelHeight) {
         this.panelWidth = panelWidth;
         this.panelHeight = panelHeight;
+
+        calculations = new AnimationCalculations();
 
         this.color = Color.BLACK;
     }
@@ -41,12 +43,6 @@ public class DVDRectangle {
         calculations.setListener(listener);
     }
 
-    public DVDRectangle(AnimationListener listener, int panelWidth, int panelHeight) {
-        calculations = new AnimationCalculations(listener);
-
-        this.panelWidth = panelWidth;
-        this.panelHeight = panelHeight;
-    }
 
     public class AnimationCalculations implements Runnable {
         @Setter
@@ -55,10 +51,6 @@ public class DVDRectangle {
         private Boolean changeColor = false;
 
         private volatile boolean running;
-
-        public AnimationCalculations(AnimationListener listener) {
-            this.listener = listener;
-        }
 
         @Override
         public void run() {

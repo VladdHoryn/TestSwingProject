@@ -23,8 +23,12 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+
 public class MainFrame extends JFrame {
     private final TabbedPane tabbedPane;
+
+    private final int WIDTH = 1000;
+    private final int HEIGHT = 600;
 
 
     public MainFrame(ProductService productService,
@@ -44,7 +48,7 @@ public class MainFrame extends JFrame {
                         orderHistorySecondaryController
                 );
 
-        DVDRectangle dvdRectangle = new DVDRectangle(800, 600);
+        DVDRectangle dvdRectangle = new DVDRectangle(WIDTH, HEIGHT);
         DVDPanel dvdPanel = new DVDPanel(dvdRectangle);
 
         DVDController dvdController =
@@ -63,7 +67,7 @@ public class MainFrame extends JFrame {
         initializeLayout();
 
         setTitle("Inventory Management");
-        setSize(1000, 600);
+        setSize(WIDTH, HEIGHT);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setVisible(true);
