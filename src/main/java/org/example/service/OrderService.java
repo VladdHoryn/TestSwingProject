@@ -7,6 +7,7 @@ import org.example.repository.OrderRepository;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 public class OrderService {
     private final OrderRepository orderRepository;
@@ -17,7 +18,7 @@ public class OrderService {
 
         this.orderRepository = orderRepository;
 
-        findAll(); //Костиль, але мені потрібно назаначати Id
+        findAll(); //Костиль, але мені потрібно назначати Id
     }
 
     public List<Order> findAll(){
@@ -30,6 +31,15 @@ public class OrderService {
 
         return result;
     };
+
+    public Optional<Order> findById(Integer id){
+        for(Order i : this.findAll()){
+            if(i.getId().equals(id))
+                return Optional.of(i);
+        }
+
+        return Optional.empty();
+    }
 
     public Order createOrder() {
 
@@ -85,10 +95,6 @@ public class OrderService {
                                 .reversed()
                 )
                 .toList();
-    }
-
-    public List<Order> getAllOrders() {
-        return orderRepository.findAll();
     }
 
     public Order deleteOrder(Order order) {

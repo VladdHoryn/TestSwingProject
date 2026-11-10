@@ -6,6 +6,8 @@ import org.example.repository.CsvProductRepository;
 import org.example.service.OrderService;
 import org.example.service.ProductService;
 import org.example.ui.MainFrame;
+import org.example.ui.controller.OrderHistorySecondaryController;
+import org.example.ui.panel.OrderHistorySecondaryPanel;
 
 import javax.swing.*;
 import java.math.BigDecimal;
