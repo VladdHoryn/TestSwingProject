@@ -1,6 +1,7 @@
 package org.example.ui.animation;
 
 
+import org.example.model.DVDRectangle;
 import org.example.ui.panel.DVDPanel;
 
 import javax.swing.*;
@@ -11,21 +12,16 @@ public class DVDAnimation implements Runnable {
 
     private volatile boolean running;
 
-    private double x = 100;
-    private double y = 100;
-
-    private double vx = 150;
-    private double vy = 100;
-
-    private final int width = 80;
-    private final int height = 50;
+    private DVDRectangle rect;
 
     private final DVDPanel panel;
 
     private final Random random = new Random();
 
-    public DVDAnimation(DVDPanel panel) {
+    public DVDAnimation(DVDPanel panel, DVDRectangle rect) {
+
         this.panel = panel;
+        this.rect = rect;
     }
 
     @Override
@@ -42,47 +38,47 @@ public class DVDAnimation implements Runnable {
 
             lastTime = now;
 
-            x += vx * delta;
-            y += vy * delta;
+            rect.setX(rect.getX() + rect.getVelocityX() * delta);
+            rect.setY(rect.getY() + rect.getVelocityY() * delta);
 
-            if (x < 0) {
-                x = 0;
-                vx = -vx;
-
-                SwingUtilities.invokeLater(() -> {
-                    panel.updateColor(this.generateRandomColor());
-                });
-            }
-
-            if (x + width > panel.getWidth()) {
-                x = Math.max(0, panel.getWidth() - width);
-                vx = -vx;
+            if (rect.getX() < 0) {
+                rect.setX(0);
+                rect.setVelocityX(-rect.getVelocityX());
 
                 SwingUtilities.invokeLater(() -> {
                     panel.updateColor(this.generateRandomColor());
                 });
             }
 
-            if (y < 0) {
-                y = 0;
-                vy = -vy;
+            if (rect.getX() + rect.getWidth() > panel.getWidth()) {
+                rect.setX(Math.max(0, panel.getWidth() - rect.getWidth()));
+                rect.setVelocityX(-rect.getVelocityX());
 
                 SwingUtilities.invokeLater(() -> {
                     panel.updateColor(this.generateRandomColor());
                 });
             }
 
-            if (y + height > panel.getHeight()) {
-                y = Math.max(0, panel.getHeight() - height);
-                vy = -vy;
+            if (rect.getY() < 0) {
+                rect.setVelocityY(0);
+                rect.setVelocityY(-rect.getVelocityY());
 
                 SwingUtilities.invokeLater(() -> {
                     panel.updateColor(this.generateRandomColor());
                 });
             }
 
-            int drawX = (int) x;
-            int drawY = (int) y;
+            if (rect.getY() + rect.getHeight() > panel.getHeight()) {
+                rect.setY(Math.max(0, panel.getHeight() - rect.getHeight()));
+                rect.setVelocityY(-rect.getVelocityY());
+
+                SwingUtilities.invokeLater(() -> {
+                    panel.updateColor(this.generateRandomColor());
+                });
+            }
+
+            int drawX = (int) rect.getX();
+            int drawY = (int) rect.getY();
 
             SwingUtilities.invokeLater(() -> {
                 panel.updatePosition(drawX, drawY);

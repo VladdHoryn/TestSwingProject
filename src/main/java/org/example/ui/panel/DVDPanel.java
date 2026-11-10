@@ -1,16 +1,13 @@
 package org.example.ui.panel;
 
+import org.example.model.DVDRectangle;
 import org.example.ui.animation.DVDAnimation;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class DVDPanel extends JPanel {
-    private static final int HEIGHT = 50;
-    private static final int WIDTH = 80;
-
-    private int x = 100;
-    private int y = 100;
+    private DVDRectangle rect;
 
     private final DVDAnimation animation;
 
@@ -19,13 +16,15 @@ public class DVDPanel extends JPanel {
     public DVDPanel() {
         setBackground(Color.WHITE);
 
-        animation = new DVDAnimation(this);
+        rect = new DVDRectangle();
+
+        animation = new DVDAnimation(this, rect);
         setLayout(new BorderLayout());
     }
 
     public void updatePosition(int x, int y) {
-        this.x = x;
-        this.y = y;
+        rect.setX(x);
+        rect.setY(y);
         repaint();
     }
 
@@ -41,7 +40,7 @@ public class DVDPanel extends JPanel {
 
         try{
             g2.setColor(dvdColor);
-            g2.fillRect((int) x, (int) y, WIDTH, HEIGHT);
+            g2.fillRect((int) rect.getX(), (int) rect.getY(), rect.getWidth(), rect.getHeight());
         } finally {
             g2.dispose();
         }
