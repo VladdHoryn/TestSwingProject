@@ -18,6 +18,8 @@ public class DVDAnimation implements Runnable {
 
     private final Random random = new Random();
 
+    private Boolean changeColor = false;
+
     public DVDAnimation(DVDPanel panel, DVDRectangle rect) {
 
         this.panel = panel;
@@ -45,44 +47,43 @@ public class DVDAnimation implements Runnable {
                 rect.setX(0);
                 rect.setVelocityX(-rect.getVelocityX());
 
-                SwingUtilities.invokeLater(() -> {
-                    panel.updateColor(this.generateRandomColor());
-                });
+
+                changeColor = true;
             }
 
             if (rect.getX() + rect.getWidth() > panel.getWidth()) {
                 rect.setX(Math.max(0, panel.getWidth() - rect.getWidth()));
                 rect.setVelocityX(-rect.getVelocityX());
 
-                SwingUtilities.invokeLater(() -> {
-                    panel.updateColor(this.generateRandomColor());
-                });
+                changeColor = true;
             }
 
             if (rect.getY() < 0) {
                 rect.setY(0);
                 rect.setVelocityY(-rect.getVelocityY());
 
-                SwingUtilities.invokeLater(() -> {
-                    panel.updateColor(this.generateRandomColor());
-                });
+                changeColor = true;
             }
 
             if (rect.getY() + rect.getHeight() > panel.getHeight()) {
                 rect.setY(Math.max(0, panel.getHeight() - rect.getHeight()));
                 rect.setVelocityY(-rect.getVelocityY());
 
-                SwingUtilities.invokeLater(() -> {
-                    panel.updateColor(this.generateRandomColor());
-                });
+                changeColor = true;
             }
 
             int drawX = (int) rect.getX();
             int drawY = (int) rect.getY();
 
             SwingUtilities.invokeLater(() -> {
+                if(changeColor) {
+                    panel.updateColor(this.generateRandomColor());
+                    changeColor = false;
+                }
+
                 panel.updatePosition(drawX, drawY);
             });
+
 
             try {
                 Thread.sleep(16);
@@ -113,5 +114,7 @@ public class DVDAnimation implements Runnable {
                 random.nextInt(256)
         );
     }
+
+
 }
 
