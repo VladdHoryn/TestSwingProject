@@ -61,4 +61,12 @@ public class DVDPanel extends JPanel {
     public void stopAnimation() {
         controller.stopAnimation();
     }
+
+    public int getPanelWidth() {
+        return getWidth();
+    }
+
+    public int getPanelHeight() {
+        return getHeight();
+    }
 }

@@ -39,4 +39,9 @@ public class DVDController implements AnimationListener {
     public void stopAnimation() {
         rectangle.getCalculations().stop();
     }
+
+    public void updatePanelSize() {
+        rectangle.setPanelWidth(panel.getPanelWidth());
+        rectangle.setPanelHeight(panel.getPanelHeight());
+    }
 }

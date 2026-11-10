@@ -23,8 +23,8 @@ public class DVDRectangle {
 
     private final int height = 50;
 
-    private final int panelWidth;
-    private final int panelHeight;
+    private int panelWidth;
+    private int panelHeight;
 
     private Color color;
 
