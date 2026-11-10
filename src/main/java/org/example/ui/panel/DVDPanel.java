@@ -1,7 +1,7 @@
 package org.example.ui.panel;
 
 import org.example.model.DVDRectangle;
-import org.example.ui.animation.DVDAnimation;
+import org.example.ui.controller.DVDAnimation;
 
 import javax.swing.*;
 import java.awt.*;

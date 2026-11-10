@@ -1,4 +1,4 @@
-package org.example.ui.animation;
+package org.example.ui.controller;
 
 
 import org.example.model.DVDRectangle;
@@ -60,7 +60,7 @@ public class DVDAnimation implements Runnable {
             }
 
             if (rect.getY() < 0) {
-                rect.setVelocityY(0);
+                rect.setY(0);
                 rect.setVelocityY(-rect.getVelocityY());
 
                 SwingUtilities.invokeLater(() -> {
